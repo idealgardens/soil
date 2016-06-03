@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "bin/server.js",
   "scripts": {
-    "build": "npm run clean && npm run build-bundle && npm run build-server && npm run build-copy",
+    "build": "npm run clean && npm run build-bundle && npm run build-copy",
     "build-bundle": "webpack -p --stats --progress --config webpack-production.config",
     "build-server": "webpack -p --stats --progress --config webpack-server-production.config",
     "build-copy": "cp -a assets build",
@@ -32,8 +32,6 @@
   "dependencies": {
     "express": "4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
-    "firebase": "^3.0.3",
-    "fireuser": "0.0.3",
     "history": "1.13.0",
     "lodash": "^4.11.1",
     "material-ui": "0.14.4",

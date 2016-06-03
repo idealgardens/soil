@@ -8,7 +8,6 @@ var serveStatic = require('serve-static')
 var config = require('../webpack-production.config')
 
 var renderIndex = require('../lib/render-index')
-var renderApp = require('../build/bundle-server')
 
 try {
   var stats = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'stats.json')))
@@ -44,18 +43,6 @@ function handleRender (req, res) {
   }
   if (typeof renderApp !== 'function') {
     console.log('Server side rendering not working. Enabled static rendering.')
-  }
-  try {
-    renderApp(req.url, function (result) {
-      res.send(renderIndex({
-        hash: stats.hash,
-        appData: result.appData,
-        appMarkup: result.appMarkup
-      }))
-    })
-  } catch (err) {
-    console.log('Server side rendering not working. Enabled static rendering.')
-    res.send('Server side rendering not working. Enabled static rendering.')
   }
 }
 
