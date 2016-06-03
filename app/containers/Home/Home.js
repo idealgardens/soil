@@ -1,14 +1,12 @@
 import React, { Component } from 'react'
-import { Link } from 'react-router'
 import './Home.scss'
 
 export default class Home extends Component {
   render () {
     return (
       <div className='Home'>
-        <h2>Welcome to soil</h2>
-        <p>Example application built with React and Redux. </p>
-        <Link to="/cars">Cars List Example</Link>
+        <h2>Welcome to Ideal Gardens</h2>
+        <p>Problem solving based on real needs</p>
       </div>
     )
   }

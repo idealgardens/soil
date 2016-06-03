@@ -1,26 +1,31 @@
 # soil
 
-[![NPM version][npm-image]][npm-url]
-[![NPM downloads][npm-downloads-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Dependency Status][daviddm-image]][daviddm-url]
 [![License][license-image]][license-url]
 [![Code Style][code-style-image]][code-style-url]
 
+| The testing grounds for Ideal Gardens web development
+
 ## Getting Started
 
-1. Install through npm:
+1. Install dependencies through npm:
 
   `npm install soil --save`
 
-## API Documentation
+2. Run development server:
 
-### [Docs Page](http://idealgardens.github.com/soil)
+  `npm start`
 
+## Environments
 
-[npm-image]: https://img.shields.io/npm/v/soil.svg?style=flat-square
-[npm-url]: https://npmjs.org/package/soil
-[npm-downloads-image]: https://img.shields.io/npm/dm/soil.svg?style=flat-square
+Applicationis currently hosted on heroku. The following environments are available at these links:
+
+Production - [idealgardens.herokuapp.com](https://idealgardens.herokuapp.com)
+Staging - [idealgardens-stg.herokuapp.com](https://idealgardens-stg.herokuapp.com)
+
+<!-- ### [Docs Page](http://idealgardens.github.com/soil) -->
+
 [travis-image]: https://img.shields.io/travis/idealgardens/soil/master.svg?style=flat-square
 [travis-url]: https://travis-ci.org/idealgardens/soil
 [daviddm-image]: https://img.shields.io/david/idealgardens/soil.svg?style=flat-square

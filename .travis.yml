@@ -16,4 +16,4 @@ deploy:
   provider: heroku
   api_key:
     secure: $HEROKU
-  app: soil
+  app: idealgardens
