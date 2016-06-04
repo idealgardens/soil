@@ -3,10 +3,11 @@ import rootReducer from '../reducers'
 // import { reduxReactRouter } from 'redux-router'
 // import createHistory from 'history/lib/createBrowserHistory'
 import thunkMiddleware from 'redux-thunk'
+import { apiMiddleware } from 'redux-api-middleware'
 
 const createStoreWithMiddleware = compose(
   // Save for redux middleware
-  applyMiddleware(thunkMiddleware),
+  applyMiddleware(thunkMiddleware, apiMiddleware),
   // reduxReactRouter({
   //   createHistory
   // }),

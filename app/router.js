@@ -8,7 +8,7 @@ import {
     Login,
     Signup,
     NotFound,
-    Cars
+    Sheets
   } from './containers'
 export default (history) => (
   <Router history={ history }>
@@ -18,7 +18,7 @@ export default (history) => (
       <Route path='signup' component={ Signup }/>
       <Route path='about' component={ About } />
       <Route path='account' component={ Account } />
-      <Route path='cars' component={ Cars } />
+      <Route path='sheets' component={ Sheets } />
       <Route path='*' component={ NotFound } />
     </Route>
   </Router>

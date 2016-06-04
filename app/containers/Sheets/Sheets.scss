@@ -1,0 +1,10 @@
+.Sheets {
+  display: flex;
+  justify-content: center;
+  padding-top: 2rem;
+  &-Pane {
+    display: flex;
+    flex-basis: 70%;
+    margin-left: 15%;
+  }
+}

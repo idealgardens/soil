@@ -6,9 +6,11 @@
     "build": "npm run clean && npm run build-bundle && npm run build-copy",
     "build-bundle": "webpack -p --stats --progress --config webpack-production.config",
     "build-server": "webpack -p --stats --progress --config webpack-server-production.config",
+    "build-backend": "babel backend --out-dir build/backend",
     "build-copy": "cp -a assets build",
+    "watch": "npm run build-backend -- --watch",
     "clean": "rimraf build",
-    "start": "node bin/dev-server",
+    "start": "babel-node bin/dev-server",
     "production": "node bin/server"
   },
   "author": "idealgardens",
@@ -30,6 +32,8 @@
     "tessellate"
   ],
   "dependencies": {
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-plugin-lodash": "^3.1.4",
     "express": "4.13.4",
     "extract-text-webpack-plugin": "^1.0.1",
     "history": "1.13.0",
@@ -43,8 +47,10 @@
     "react-router-redux": "4.0.0-rc.1",
     "react-tap-event-plugin": "0.2.1",
     "redux": "3.2.1",
+    "redux-api-middleware": "^1.0.2",
     "redux-thunk": "2.1.0",
     "serve-static": "1.10.2",
+    "tsheets-client": "^1.2.0",
     "webpack": "1.13.0"
   },
   "devDependencies": {

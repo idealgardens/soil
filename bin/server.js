@@ -8,7 +8,7 @@ var serveStatic = require('serve-static')
 var config = require('../webpack-production.config')
 
 var renderIndex = require('../lib/render-index')
-
+var buildBackend = require('../build/backend')
 try {
   var stats = JSON.parse(fs.readFileSync(path.resolve(__dirname, '..', 'stats.json')))
 } catch (err) {
@@ -17,12 +17,21 @@ try {
 
 var app = new Express()
 
+buildBackend(app)
+
 app.use('/' + config.publicPath, serveStatic('assets', {
   index: false,
   setHeaders: function (res) {
     res.setHeader('Cache-Control', 'max-age=2592000')
   }
 }))
+app.use('/' + config.publicPath, serveStatic(config.output.path, {
+  index: false,
+  setHeaders: function (res) {
+    res.setHeader('Cache-Control', 'max-age=2592000')
+  }
+}))
+
 app.use('/' + config.publicPath, serveStatic(config.output.path, {
   index: false,
   setHeaders: function (res) {
