@@ -5,6 +5,11 @@
   &-Pane {
     display: flex;
     flex-basis: 70%;
-    margin-left: 15%;
+  }
+  &-Loading {
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    display: flex;
+    justify-content: center;
   }
 }

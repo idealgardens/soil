@@ -8,29 +8,32 @@ import TableRow from 'material-ui/lib/table/table-row'
 import TableHeader from 'material-ui/lib/table/table-header'
 import TableRowColumn from 'material-ui/lib/table/table-row-column'
 import TableBody from 'material-ui/lib/table/table-body'
+import CircularProgress from 'material-ui/lib/circular-progress'
 import * as Actions from '../../actions/sheets'
 import './Sheets.scss'
+import { find } from 'lodash'
 
 class Sheets extends Component {
   constructor (props) {
     super(props)
   }
   componentDidMount() {
-    console.log('this.props:', this.props)
     this.props.getSheets()
   }
+
   static propTypes = {
 
   }
 
   render () {
-    const { sheets } = this.props
+    const { sheets, isLoading } = this.props
     const sheetsList = sheets ? sheets.map((sheet, i) => {
+      const user = find(this.props.users, { id: sheet.user_id })
       return (
         <TableRow key={ `Sheet-${i}` }>
-          <TableRowColumn>{sheet.user_id}</TableRowColumn>
-          <TableRowColumn>{this.props.users[sheet.user_id] || 'John Smith'}</TableRowColumn>
-          <TableRowColumn>Employed</TableRowColumn>
+          <TableRowColumn>{ user.username }</TableRowColumn>
+          <TableRowColumn>{ user.first_name || 'John'} { user.last_name || 'Smith'}</TableRowColumn>
+          <TableRowColumn>{ sheet.location }</TableRowColumn>
         </TableRow>
       )
     }) : null
@@ -38,15 +41,23 @@ class Sheets extends Component {
       <div className='Sheets'>
         <Paper className='Sheets-Pane' zDepth={1}>
           <Table>
-            <TableHeader>
+            <TableHeader adjustForCheckbox={ false } displaySelectAll={ false }>
               <TableRow>
-                <TableHeaderColumn>ID</TableHeaderColumn>
+                <TableHeaderColumn>Username</TableHeaderColumn>
                 <TableHeaderColumn>Name</TableHeaderColumn>
-                <TableHeaderColumn>Status</TableHeaderColumn>
+                <TableHeaderColumn>Location</TableHeaderColumn>
               </TableRow>
             </TableHeader>
-            <TableBody>
-              { sheetsList }
+            <TableBody displayRowCheckbox={ false }>
+                {
+                  isLoading ?
+                  <TableRow>
+                    <TableRowColumn className='Sheets-Loading'>
+                      <CircularProgress size={1.5} />
+                    </TableRowColumn>
+                  </TableRow>
+                  : sheetsList
+                }
             </TableBody>
           </Table>
         </Paper>
@@ -54,16 +65,18 @@ class Sheets extends Component {
     )
   }
 }
-//Place state of redux store into props of component
+
+// Place state of redux store into props of component
 function mapStateToProps (state) {
-  console.log('state:', state)
   return {
     router: state.router,
-    users: state.users,
-    sheets: state.sheets || []
+    isLoading: state.users.isFetching,
+    users: state.users.items,
+    sheets: state.sheets.items
   }
 }
-//Place action methods into props
+
+// Place action methods into props
 function mapDispatchToProps (dispatch) {
   return bindActionCreators(Actions, dispatch)
 }

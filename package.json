@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "main": "bin/server.js",
   "scripts": {
-    "build": "npm run clean && npm run build-bundle && npm run build-copy",
+    "build": "npm run clean && npm run build-bundle && npm run build-backend && npm run build-copy",
     "build-bundle": "webpack -p --stats --progress --config webpack-production.config",
     "build-server": "webpack -p --stats --progress --config webpack-server-production.config",
     "build-backend": "babel backend --out-dir build/backend",
@@ -32,6 +32,7 @@
     "tessellate"
   ],
   "dependencies": {
+    "babel-cli": "^6.9.0",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-lodash": "^3.1.4",
     "express": "4.13.4",
