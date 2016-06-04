@@ -18,18 +18,18 @@ export function getSheets () {
     [CALL_API]: {
       endpoint: '/api/sheets',
       method: 'GET',
-      types: [ GET_SHEETS_REQUEST, GET_SHEETS_SUCCESS , GET_SHEETS_FAILURE ]
+      types: [ GET_SHEETS_REQUEST, GET_SHEETS_SUCCESS, GET_SHEETS_FAILURE ]
     }
   }
 }
 
-export function removeSheets(sheets) {
+export function removeSheets (sheets) {
   return {
     type: 'REMOVE_SHEETS',
     payload: sheets
   }
 }
-export function updateSheets(sheets) {
+export function updateSheets (sheets) {
   return {
     type: 'UPDATE_SHEETS',
     payload: sheets

@@ -3,18 +3,25 @@ import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-// import { signup } from 'fireuser'
 import * as Actions from '../../actions'
-
 // Components
 import SignupForm from '../../components/SignupForm/SignupForm'
 import Paper from 'material-ui/lib/paper'
 import RaisedButton from 'material-ui/lib/raised-button'
 import CircularProgress from 'material-ui/lib/circular-progress'
 import Snackbar from 'material-ui/lib/snackbar'
+import { firebase, helpers } from 'redux-react-firebase'
 
 import './Signup.scss'
-
+const {isLoaded, isEmpty,  dataToJS, pathToJS} = helpers
+@firebase([
+  'todos'
+])
+@connect(
+  ({firebase}) => ({
+    authError: pathToJS(firebase, 'authError'),
+  })
+)
 class Signup extends Component {
   constructor (props) {
     super(props)
@@ -60,11 +67,9 @@ class Signup extends Component {
    */
   handleSignup = signupData => {
     this.setState({ snackCanOpen: true, isLoading: true })
-    signup(signupData)
-      .then((res) => this.context.router.push(`/${res.user.username}`))
-      .catch(error => this.error = error.toString || error)
-      .finally(() => this.setState({ isLoading: false }))
-    // event({ category: 'User', action: 'Email Signup' })
+    console.log('this.props.firebase:', this.props.firebase)
+    console.log('this.props.firebase:', typeof this.props.firebase.set)
+    this.props.firebase.createUser(signupData, { username: signupData.username })
   }
 
   render () {
@@ -118,7 +123,9 @@ class Signup extends Component {
 
 // Place state of redux store into props of component
 const mapStateToProps = (state) => {
+  console.log('firebase:', state)
   return {
+    firebase: state.firebase,
     account: state.account,
     router: state.router
   }

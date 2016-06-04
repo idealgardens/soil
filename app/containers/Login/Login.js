@@ -44,6 +44,7 @@ class Login extends Component {
       snackCanOpen: true
     })
     this.props.login(loginData)
+    this.props.firebase.login(loginData)
     // event({ category: 'User', action: 'Email Login' })
   }
 

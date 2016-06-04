@@ -6,7 +6,7 @@ import { browserHistory } from 'react-router'
 import { createHistory } from 'history'
 import configureStore from './store/configureStore'
 
-const initialState = { cars: [ { name: 'First Car', type: 'Tesla', hp: 600 } ] }
+const initialState = { account: {} }
 
 const store = configureStore(initialState, createHistory)
 
