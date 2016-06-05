@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Link } from 'react-router'
-import * as Actions from '../../actions'
+import { firebase, helpers } from 'redux-react-firebase'
 
 // Components
 import LoginForm from '../../components/LoginForm/LoginForm'
@@ -12,52 +12,52 @@ import Snackbar from 'material-ui/lib/snackbar'
 import RaisedButton from 'material-ui/lib/raised-button'
 import FontIcon from 'material-ui/lib/font-icon'
 
+const { isLoaded, isEmpty,  dataToJS, pathToJS } = helpers
+
 import './Login.scss'
 
-class Login extends Component {
+// Props decorators
+@firebase()
+@connect(
+  ({firebase}) => ({
+    authError: pathToJS(firebase, 'authError'),
+    profile: pathToJS(firebase, 'profile')
+  })
+)
+export default class Login extends Component {
   constructor (props) {
     super(props)
-  }
-
-  state = {
-    snackCanOpen: false,
-    errors: { username: null, password: null }
-  }
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.account.username) {
-      this.context.router.push(`/${nextProps.account.username}`)
+    this.state = {
+      snackCanOpen: false,
+      errors: { username: null, password: null }
     }
   }
 
-  handleRequestClose = () =>
-    this.setState({
-      snackCanOpen: false,
-    })
-
-  handleLogin = loginData => {
-    this.setState({
-      snackCanOpen: true
-    })
-    this.props.login(loginData)
-    this.props.firebase.login(loginData)
-    // event({ category: 'User', action: 'Email Login' })
+  componentWillReceiveProps (nextProps) {
+    const { account, authError } = nextProps
+    if (authError) {
+      this.setState({
+        isLoading: false
+      })
+    }
   }
 
-  providerLogin = provider => {
-    this.props.authWithProvider(provider)
-    // event({ category: 'User', action: 'Provider Login', value: provider })
-  }
+  handleRequestClose = () => this.setState({ snackCanOpen: false })
 
   render () {
+    const { isLoading, snackCanOpen } = this.state
+    const { authError } = this.props
+    const handleLogin = loginData => {
+      this.setState({
+        snackCanOpen: true,
+        isLoading: true
+      })
+      // event({ category: 'User', action: 'Email Login' })
+      this.props.firebase.login(loginData)
+        .then(() => this.context.router.push('/sheets'))
+    }
 
-    const { isFetching, error } = this.props.account || {}
-
-    if (isFetching) {
+    if (isLoading) {
       return (
         <div className="Login">
           <div className="Login-Progress">
@@ -70,7 +70,7 @@ class Login extends Component {
     return (
       <div className="Login">
         <Paper className="Login-Panel">
-          <LoginForm onLogin={ this.handleLogin } />
+          <LoginForm onLogin={ handleLogin } />
         </Paper>
         <div className="Login-Or">
           or
@@ -78,12 +78,12 @@ class Login extends Component {
         <RaisedButton
           label="Sign in With Google"
           secondary={ true }
-          onTouchTap={ this.providerLogin.bind(this, 'google') }
+          onTouchTap={ handleLogin.bind(this, { provider: 'google', type: 'popup' }) }
         />
         <RaisedButton
           label="Sign in With GitHub"
           secondary={ true }
-          onTouchTap={ this.providerLogin.bind(this, 'github') }
+          onTouchTap={ handleLogin.bind(this, { provider: 'github', type: 'popup' }) }
         />
         <div className="Login-Signup">
           <span className="Login-Signup-Label">
@@ -94,8 +94,8 @@ class Login extends Component {
           </Link>
         </div>
         <Snackbar
-          open={ typeof error !== 'undefined' && this.state.snackCanOpen }
-          message={ error || 'Error' }
+          open={ isLoaded(authError) && !isEmpty(authError) && snackCanOpen }
+          message={ authError ? authError.toString() : 'Error' }
           action="close"
           autoHideDuration={ 3000 }
           onRequestClose={ this.handleRequestClose }
@@ -105,16 +105,3 @@ class Login extends Component {
 
   }
 }
-
-// Place state of redux store into props of component
-const mapStateToProps = (state) => {
-  return {
-    account: state.account,
-    router: state.router
-  }
-}
-
-// Place action methods into props
-const mapDispatchToProps = (dispatch) => bindActionCreators(Actions, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login)

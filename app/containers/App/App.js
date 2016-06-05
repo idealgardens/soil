@@ -13,7 +13,20 @@ import './App.scss'
 // Tap Plugin
 import injectTapEventPlugin from 'react-tap-event-plugin'
 injectTapEventPlugin()
-
+import { firebase, helpers } from 'redux-react-firebase'
+const {isLoaded, isEmpty,  dataToJS, pathToJS} = helpers
+@firebase([
+  'todos'
+])
+@connect(
+  ({firebase}) => {
+    return ({
+      auth: pathToJS(firebase, 'auth'),
+      authError: pathToJS(firebase, 'authError'),
+      profile: pathToJS(firebase, 'profile')
+    })
+  }
+)
 class Main extends Component {
   constructor (props) {
     super(props)
@@ -33,22 +46,22 @@ class Main extends Component {
     }
   }
 
-  handleClick = loc => {
-    this.context.router.push(`/${loc}`)
-  }
-
-  handleLogout = () => {
-    this.props.logout()
-    this.context.router.push(`/`)
-  }
-
   render () {
+    const { firebase, auth, profile } = this.props
+
+    const handleLogout = () => {
+      this.props.firebase.logout()
+      this.context.router.push(`/`)
+    }
+
+    const handleClick = (loc) => this.context.router.push(`/${loc}`)
+
     return (
       <div className="App">
         <Navbar
-          account={ this.props.account }
-          onMenuClick={ this.handleClick }
-          onLogoutClick={ this.handleLogout }
+          account={ this.props.profile }
+          onMenuClick={ handleClick }
+          onLogoutClick={ handleLogout }
         />
         { this.props.children }
       </div>

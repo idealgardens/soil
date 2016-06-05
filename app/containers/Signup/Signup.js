@@ -14,38 +14,20 @@ import { firebase, helpers } from 'redux-react-firebase'
 
 import './Signup.scss'
 const {isLoaded, isEmpty,  dataToJS, pathToJS} = helpers
-@firebase([
-  'todos'
-])
+
+@firebase()
 @connect(
   ({firebase}) => ({
     authError: pathToJS(firebase, 'authError'),
   })
 )
-class Signup extends Component {
+export default class Signup extends Component {
   constructor (props) {
     super(props)
-  }
-
-  state = {
-    errors: { username: null, password: null },
-    snackCanOpen: false
-  }
-
-  static contextTypes = {
-    router: React.PropTypes.object.isRequired
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.account.username) {
-      this.context.router.push(`/${nextProps.account.username}`)
+    this.state = {
+      errors: { username: null, password: null },
+      snackCanOpen: false
     }
-  }
-
-  handleSnackClose = () => {
-    this.setState({
-     snackCanOpen: false
-    })
   }
 
   /**
@@ -61,21 +43,34 @@ class Signup extends Component {
       snackCanOpen: false
     })
 
-  /**
-   * @function handleSignup
-   * @description Call signup through redux-devshare action
-   */
-  handleSignup = signupData => {
-    this.setState({ snackCanOpen: true, isLoading: true })
-    console.log('this.props.firebase:', this.props.firebase)
-    console.log('this.props.firebase:', typeof this.props.firebase.set)
-    this.props.firebase.createUser(signupData, { username: signupData.username })
-  }
-
   render () {
+    const { isLoading } = this.props
     const { isFetching, error } = this.props.account || {}
 
-    if (isFetching) {
+    /**
+     * @function handleSignup
+     * @description Call signup through redux-devshare action
+     */
+    const handleSignup = signupData => {
+      const { username, email, provider } = signupData
+      this.setState({ snackCanOpen: true, isLoading: true })
+      console.log('signup data:', signupData)
+      if (provider) {
+        return this.props.firebase.login(signupData)
+          .then(response => {
+            console.log('response:', response)
+            this.props.firebase.createUser(response, response)
+          })
+          .catch(error => {
+            console.error('error signing up:', error, error.toString())
+          })
+      }
+      this.props.firebase.createUser(signupData, { username, email })
+    }
+
+    const closeToast = () => this.setState({ snackCanOpen: false })
+
+    if (isLoading) {
       return (
         <div className="Signup">
           <div className="Signup-Progress">
@@ -87,7 +82,7 @@ class Signup extends Component {
     return (
       <div className="Signup">
         <Paper className="Signup-Panel">
-          <SignupForm onSignup={ this.handleSignup } />
+          <SignupForm onSignup={ handleSignup } />
         </Paper>
         <div className="Signup-Or">
           or
@@ -95,12 +90,7 @@ class Signup extends Component {
         <RaisedButton
           label="Sign in with Google"
           secondary={ true }
-          onTouchTap={ this.handleSignup.bind(this, 'google') }
-        />
-        <RaisedButton
-          label="Sign in with GitHub"
-          secondary={ true }
-          onTouchTap={ this.handleSignup.bind(this, 'github') }
+          onTouchTap={ handleSignup.bind(this, { provider: 'google', type: 'popup' }) }
         />
         <div className="Signup-Login">
           <span className="Signup-Login-Label">
@@ -113,25 +103,9 @@ class Signup extends Component {
           message={ error || 'Signup error' }
           action="close"
           autoHideDuration={ 3000 }
-          onRequestClose={ this.handleSnackClose }
+          onRequestClose={ closeToast }
         />
       </div>
     )
   }
 }
-
-
-// Place state of redux store into props of component
-const mapStateToProps = (state) => {
-  console.log('firebase:', state)
-  return {
-    firebase: state.firebase,
-    account: state.account,
-    router: state.router
-  }
-}
-
-// Place action methods into props
-const mapDispatchToProps = (dispatch) => bindActionCreators(Actions, dispatch)
-
-export default connect(mapStateToProps, mapDispatchToProps)(Signup)

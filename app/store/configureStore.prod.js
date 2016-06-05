@@ -10,8 +10,8 @@ export default function configureStore (initialState, history) {
   const createStoreWithMiddleware = compose(
     // applyMiddleware(thunk, reduxRouterMiddleware)
     reduxReactFirebase('https://idealgardens.firebaseio.com/', {
-    userProfile: 'users' // path where user profiles are stored
-  }),
+      userProfile: 'users' // path where user profiles are stored
+    }),
     applyMiddleware(thunk, apiMiddleware)
   )(createStore)
   const store = createStoreWithMiddleware(rootReducer, initialState)
