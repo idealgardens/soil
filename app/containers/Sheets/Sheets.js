@@ -27,6 +27,7 @@ class Sheets extends Component {
 
   render () {
     const { sheets, isLoading } = this.props
+    console.log('sheets:', sheets)
     const sheetsList = sheets ? sheets.map((sheet, i) => {
       const user = find(this.props.users, { id: sheet.user_id })
       return (
